@@ -1,4 +1,5 @@
 # note: older fork in zxing-cpp.spec (both are parallel-installable)
+# TODO: python module
 Summary:	C++ port of ZXing - 1D/2D barcode image processing library
 Summary(pl.UTF-8):	Port C++ biblioteki ZXing, przetwarzającej kody paskowe 1D/2D
 Name:		zxing-cpp-nu
@@ -41,6 +42,8 @@ Pliki nagłówkowe biblioteki ZXing.
 install -d build
 cd build
 %cmake .. \
+	-DBUILD_BLACKBOX_TESTS=OFF \
+	-DBUILD_UNIT_TESTS=OFF \
 	-DCMAKE_INSTALL_INCLUDEDIR=include \
 	-DCMAKE_INSTALL_LIBDIR=%{_lib}
 
