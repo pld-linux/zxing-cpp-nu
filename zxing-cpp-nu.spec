@@ -6,13 +6,13 @@
 Summary:	C++ port of ZXing - 1D/2D barcode image processing library
 Summary(pl.UTF-8):	Port C++ biblioteki ZXing, przetwarzającej kody paskowe 1D/2D
 Name:		zxing-cpp-nu
-Version:	2.1.0
-Release:	2
+Version:	2.2.1
+Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/nu-book/zxing-cpp/releases
 Source0:	https://github.com/nu-book/zxing-cpp/archive/v%{version}/zxing-cpp-%{version}.tar.gz
-# Source0-md5:	17289e8cd489cda9d72b30f05e6f007d
+# Source0-md5:	8d2b1592668c57f77c6351c8bb5fe739
 URL:		https://github.com/nu-book/zxing-cpp
 BuildRequires:	cmake >= 3.15
 BuildRequires:	libstdc++-devel >= 6:7
