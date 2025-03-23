@@ -6,16 +6,16 @@
 Summary:	C++ port of ZXing - 1D/2D barcode image processing library
 Summary(pl.UTF-8):	Port C++ biblioteki ZXing, przetwarzającej kody paskowe 1D/2D
 Name:		zxing-cpp-nu
-Version:	2.2.1
-Release:	2
+Version:	2.3.0
+Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/nu-book/zxing-cpp/releases
 Source0:	https://github.com/nu-book/zxing-cpp/archive/v%{version}/zxing-cpp-%{version}.tar.gz
-# Source0-md5:	8d2b1592668c57f77c6351c8bb5fe739
+# Source0-md5:	91ae23c12b5a00d54037ad019777238a
 URL:		https://github.com/nu-book/zxing-cpp
-BuildRequires:	cmake >= 3.15
-BuildRequires:	libstdc++-devel >= 6:7
+BuildRequires:	cmake >= 3.16
+BuildRequires:	libstdc++-devel >= 6:8
 %if %{with python3}
 BuildRequires:	python3-devel >= 1:3.6
 BuildRequires:	python3-pybind11
@@ -34,7 +34,7 @@ Summary:	Header files for ZXing library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki ZXing
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libstdc++-devel >= 6:7
+Requires:	libstdc++-devel >= 6:8
 
 %description devel
 Header files for ZXing library.
@@ -58,16 +58,18 @@ Wiązania Pythona do biblioteki kodów paskowych zxing-cpp.
 %prep
 %setup -q -n zxing-cpp-%{version}
 
+# just noinst example, disable building not to require stb
+%{__sed} -i '1i return()' wrappers/c/CMakeLists.txt
+
 %build
 %cmake -B build \
-	-DBUILD_BLACKBOX_TESTS=OFF \
-	-DBUILD_EXAMPLES=OFF \
-	%{?with_python3:-DBUILD_PYTHON_MODULE=ON} \
-	-DBUILD_UNIT_TESTS=OFF \
 	-DCMAKE_INSTALL_INCLUDEDIR=include \
-	-DCMAKE_INSTALL_LIBDIR=%{_lib}
-
-# -DBUILD_C_API=ON (experimental now and not installed)
+	-DCMAKE_INSTALL_LIBDIR=%{_lib} \
+	-DZXING_BLACKBOX_TESTS=OFF \
+	-DZXING_C_API=ON \
+	-DZXING_EXAMPLES=OFF \
+	%{?with_python3:-DZXING_PYTHON_MODULE=ON} \
+	-DZXING_UNIT_TESTS=OFF
 
 %{__make} -C build
 
