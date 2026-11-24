@@ -6,23 +6,23 @@
 Summary:	C++ port of ZXing - 1D/2D barcode image processing library
 Summary(pl.UTF-8):	Port C++ biblioteki ZXing, przetwarzającej kody paskowe 1D/2D
 Name:		zxing-cpp-nu
-Version:	3.0.2
+Version:	3.1.1
 Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/zxing-cpp/zxing-cpp/releases
 Source0:	https://github.com/zxing-cpp/zxing-cpp/archive/v%{version}/zxing-cpp-%{version}.tar.gz
-# Source0-md5:	ff266fd8771a96c2954c4384d38b79e9
+# Source0-md5:	583d48872d6641b1d10a8ebc34bbd060
 URL:		https://github.com/zxing-cpp/zxing-cpp
-BuildRequires:	cmake >= 3.16
+BuildRequires:	cmake >= 3.18
 BuildRequires:	libstdc++-devel >= 6:8
 %if %{with python3}
-BuildRequires:	python3-devel >= 1:3.6
-BuildRequires:	python3-pybind11
+BuildRequires:	python3-devel >= 1:3.10
+BuildRequires:	python3-nanobind >= 2.11.0
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	zint-devel >= 2.16.0
-Requires:	zint >= 2.16.0
+Requires:	zint%{?_isa} >= 2.16.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -35,9 +35,9 @@ Port C++ biblioteki ZXing, przetwarzającej kody paskowe 1D/2D
 Summary:	Header files for ZXing library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki ZXing
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 Requires:	libstdc++-devel >= 6:8
-Requires:	zint-devel >= 2.16.0
+Requires:	zint-devel%{?_isa} >= 2.16.0
 
 %description devel
 Header files for ZXing library.
@@ -49,8 +49,8 @@ Pliki nagłówkowe biblioteki ZXing.
 Summary:	Python bindings for the zxing-cpp barcode library
 Summary(pl.UTF-8):	Wiązania Pythona do biblioteki kodów paskowych zxing-cpp
 Group:		Libraries/Python
-Requires:	%{name} = %{version}-%{release}
-Requires:	python3-libs >= 1:3.6
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+Requires:	python3-libs%{?_isa} >= 1:3.6
 
 %description -n python3-zxingcpp
 Python bindings for the zxing-cpp barcode library.
@@ -73,9 +73,11 @@ Wiązania Pythona do biblioteki kodów paskowych zxing-cpp.
 	-DZXING_DEPENDENCIES=LOCAL \
 	-DZXING_EXAMPLES=OFF \
 	-DZXING_EXPERIMENTAL_API=ON \
+	-DZXING_PYTHON_INSTALL_LIBDIR=%{py3_sitedir}/zxingcpp \
 	%{?with_python3:-DZXING_PYTHON_MODULE=ON} \
 	-DZXING_UNIT_TESTS=OFF \
-	-DZXING_USE_BUNDLED_ZINT=OFF
+	-DZXING_USE_BUNDLED_ZINT=OFF \
+	-Dnanobind_DIR=%{py3_sitescriptdir}/nanobind/cmake
 
 %{__make} -C build
 
@@ -86,8 +88,8 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 %if %{with python3}
-install -d $RPM_BUILD_ROOT%{py3_sitedir}
-%{__mv} $RPM_BUILD_ROOT%{_libdir}/zxingcpp.cpython-*.so $RPM_BUILD_ROOT%{py3_sitedir}
+%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
+%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
 %endif
 
 %clean
@@ -112,5 +114,10 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with python3}
 %files -n python3-zxingcpp
 %defattr(644,root,root,755)
-%{py3_sitedir}/zxingcpp.cpython-*.so
+%dir %{py3_sitedir}/zxingcpp
+%{py3_sitedir}/zxingcpp/zxingcpp.abi3.so
+%{py3_sitedir}/zxingcpp/zxingcpp.pyi
+%{py3_sitedir}/zxingcpp/__init__.py
+%{py3_sitedir}/zxingcpp/py.typed
+%{py3_sitedir}/zxingcpp/__pycache__
 %endif
